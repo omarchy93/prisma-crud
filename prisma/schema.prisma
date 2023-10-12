@@ -36,56 +36,74 @@ model posts {
   createAt    DateTime @default(now()) @db.Timestamp(0)
   updateAt    DateTime @default(now()) @updatedAt @db.Timestamp(0)
   publishedAt DateTime @default(now()) @db.Timestamp(0)
+
+  postComments postComments[]
+  postMetas    postMetas[]
+
+  postTags     postTags[]
+  postCategory postCategory[]
 }
 
-// model tag {
-//   id        BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
-//   title     String     @db.VarChar(75)
-//   metaTitle String     @db.VarChar(100)
-//   slug      String     @db.VarChar(100)
-//   content   String     @db.VarChar(200)
-//   post_tag  post_tag[]
-// }
+model postComments {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(100)
+  content     String   @db.VarChar(200)
+  published   Int      @db.TinyInt
+  postId      BigInt   @db.UnsignedBigInt
+  post        posts    @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt    DateTime @default(now()) @db.Timestamp(0)
+  publishedAt DateTime @default(now()) @db.Timestamp(0)
+}
 
-// model category {
-//   id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
-//   title         String          @db.VarChar(75)
-//   metaTitle     String          @db.VarChar(100)
-//   slug          String          @db.VarChar(100)
-//   content       String          @db.VarChar(200)
-//   post_category post_category[]
-// }
+model postMetas {
+  id       BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  key      String   @db.VarChar(50)
+  content  String   @db.VarChar(200)
+  postId   BigInt   @db.UnsignedBigInt
+  post     posts    @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
 
-// model post_comment {
-//   id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-//   parentId    BigInt
-//   title       String   @db.VarChar(100)
-//   content     String   @db.VarChar(200)
-//   published   Int      @db.TinyInt
-//   createAt    DateTime @default(now()) @db.Timestamp(0)
-//   publishedAt DateTime @default(now()) @db.Timestamp(0)
+model tags {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String   @db.VarChar(75)
+  metaTitle String   @db.VarChar(100)
+  slug      String   @db.VarChar(100)
+  content   String   @db.VarChar(200)
+  createAt  DateTime @default(now()) @db.Timestamp(0)
+  updateAt  DateTime @default(now()) @updatedAt @db.Timestamp(0)
 
-//   postId      BigInt
-//   post        post     @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-// }
+  postTags postTags[]
+}
 
-// model post_tag {
-//   postId BigInt
-//   post   post   @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-//   tagId  BigInt @unique
-//   tag    tag    @relation(fields: [tagId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-// }
+model postTags {
+  id       BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  postId   BigInt   @db.UnsignedBigInt
+  post     posts    @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  tagId    BigInt   @db.UnsignedBigInt
+  tag      tags     @relation(fields: [tagId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt DateTime @default(now()) @db.Timestamp(0)
+  updateAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+}
 
-// model post_category {
-//   postId     BigInt
-//   post       post     @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-//   categoryId BigInt   @unique
-//   category   category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-// }
+model categorys {
+  id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  title        String         @db.VarChar(75)
+  metaTitle    String         @db.VarChar(100)
+  slug         String         @db.VarChar(100)
+  content      String         @db.VarChar(200)
+  createAt     DateTime       @default(now()) @db.Timestamp(0)
+  updateAt     DateTime       @default(now()) @updatedAt @db.Timestamp(0)
+  postCategory postCategory[]
+}
 
-// model post_meta {
-//   key     String @db.VarChar(50)
-//   content String @db.VarChar(200)
-//   postId  BigInt @unique
-//   post    post   @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-// }
+model postCategory {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  postId     BigInt    @db.UnsignedBigInt
+  post       posts     @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  categoryId BigInt    @db.UnsignedBigInt
+  category   categorys @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt   DateTime  @default(now()) @db.Timestamp(0)
+  updateAt   DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+}
