@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,19 +7,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model users {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  firstName    String   @db.VarChar(50)
+  middleName   String   @db.VarChar(50)
+  lastName     String   @db.VarChar(50)
+  email        String   @unique @db.VarChar(50)
+  mobile       String   @db.VarChar(15)
+  password     String   @db.VarChar(32)
+  intro        String   @db.VarChar(200)
+  profile      String   @db.VarChar(200)
+  registeredAt DateTime @default(now()) @db.Timestamp(0)
+  lastLogin    DateTime @default(now()) @db.Timestamp(0)
 
-  id        BigInt     @id @default(autoincrement()) @db.UnsignedBigInt 
-  firstName String  @db.VarChar(50)
-  middleName String @db.VarChar(50)
-  lastName  String  @db.VarChar(50)
-  email    String    @unique @db.VarChar(50)
-  mobile String   @db.VarChar(15)
-  password  String   @db.VarChar(32)
- 
-  registeredAt  DateTime @default(now()) @db.Timestamp(0)
-  lastLogin DateTime  @db.Timestamp(0)
-  intro String @db.VarChar(200)
-  profile String @db.VarChar(200)
-  @@map("users")
+  posts posts[]
 }
+
+model posts {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  authorId    BigInt   @db.UnsignedBigInt
+  parentId    BigInt   @db.UnsignedBigInt
+  title       String   @db.VarChar(75)
+  metaTitle   String   @db.VarChar(100)
+  slug        String   @db.VarChar(100)
+  summary     String   @db.VarChar(200)
+  published   Int      @db.TinyInt
+  content     String   @db.VarChar(200)
+  userId      BigInt   @db.UnsignedBigInt
+  user        users    @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt    DateTime @default(now()) @db.Timestamp(0)
+  updateAt    DateTime @default(now()) @updatedAt @db.Timestamp(0)
+  publishedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+// model tag {
+//   id        BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+//   title     String     @db.VarChar(75)
+//   metaTitle String     @db.VarChar(100)
+//   slug      String     @db.VarChar(100)
+//   content   String     @db.VarChar(200)
+//   post_tag  post_tag[]
+// }
+
+// model category {
+//   id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+//   title         String          @db.VarChar(75)
+//   metaTitle     String          @db.VarChar(100)
+//   slug          String          @db.VarChar(100)
+//   content       String          @db.VarChar(200)
+//   post_category post_category[]
+// }
+
+// model post_comment {
+//   id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+//   parentId    BigInt
+//   title       String   @db.VarChar(100)
+//   content     String   @db.VarChar(200)
+//   published   Int      @db.TinyInt
+//   createAt    DateTime @default(now()) @db.Timestamp(0)
+//   publishedAt DateTime @default(now()) @db.Timestamp(0)
+
+//   postId      BigInt
+//   post        post     @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+// }
+
+// model post_tag {
+//   postId BigInt
+//   post   post   @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+//   tagId  BigInt @unique
+//   tag    tag    @relation(fields: [tagId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+// }
+
+// model post_category {
+//   postId     BigInt
+//   post       post     @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+//   categoryId BigInt   @unique
+//   category   category @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+// }
+
+// model post_meta {
+//   key     String @db.VarChar(50)
+//   content String @db.VarChar(200)
+//   postId  BigInt @unique
+//   post    post   @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+// }
