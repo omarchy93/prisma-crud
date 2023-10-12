@@ -42,14 +42,13 @@ export async function PUT(req, res) {
     let result = await prisma.users.update({
       where: reqBody,
       data: {
-        firstName: "ccccc",
-        middleName: "gccc",
-        lastName: "chyasdfasdfccd",
-        email: "omaasdfdfdfsadfr@chyfdf.com",
-        mobile: "13l",
-        password: "12fdf3fd232",
+        title: "ccccc",
+        metaTitle: "gccc",
+        slug: "chyasdfasdfccd",
+        summary: "omaasdfdfdfsadfrchyfdf",
+        published: "13l",
+        content: "12fdf3fd232",
         intro: "gfd",
-        profile: "thdfddfdffdf",
       },
     });
     return NextResponse.json({ status: "success", result: result });
