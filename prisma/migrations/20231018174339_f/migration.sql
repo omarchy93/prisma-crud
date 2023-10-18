@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `tags` (
+CREATE TABLE `category` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(75) NOT NULL,
     `metaTitle` VARCHAR(100) NOT NULL,

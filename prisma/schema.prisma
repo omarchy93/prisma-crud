@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model user {
   id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   firstName    String   @db.VarChar(50)
   middleName   String   @db.VarChar(50)
@@ -15,95 +15,105 @@ model users {
   email        String   @unique @db.VarChar(50)
   mobile       String   @db.VarChar(15)
   password     String   @db.VarChar(32)
-  intro        String   @db.VarChar(200)
-  profile      String   @db.VarChar(200)
+  admin        Int      @db.TinyInt
   registeredAt DateTime @default(now()) @db.Timestamp(0)
   lastLogin    DateTime @default(now()) @db.Timestamp(0)
 
-  posts posts[]
+  createAt DateTime  @default(now()) @db.Timestamp(0)
+  updateAt DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+  cart     cart[]
+  order    order[]
+  product  product[]
 }
 
-model posts {
-  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  title       String   @db.VarChar(75)
-  metaTitle   String   @db.VarChar(100)
-  slug        String   @db.VarChar(100)
-  summary     String   @db.VarChar(200)
-  published   Int      @db.TinyInt
-  content     String   @db.VarChar(200)
-  userId      BigInt   @db.UnsignedBigInt
-  user        users    @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  createAt    DateTime @default(now()) @db.Timestamp(0)
-  updateAt    DateTime @default(now()) @updatedAt @db.Timestamp(0)
-  publishedAt DateTime @default(now()) @db.Timestamp(0)
-
-  postComments postComments[]
-  postMetas    postMetas[]
-
-  postTags     postTags[]
-  postCategory postCategory[]
+model cart {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title      String   @db.VarChar(100)
+  sessionId  String   @db.VarChar(100)
+  token      String   @db.VarChar(100)
+  status     String   @db.VarChar(100)
+  firstName  String   @db.VarChar(100)
+  middleName String   @db.VarChar(100)
+  lastName   String   @db.VarChar(100)
+  email      String   @unique @db.VarChar(100)
+  mobile     String   @db.VarChar(100)
+  city       String   @db.VarChar(100)
+  country    String   @db.VarChar(100)
+  userId     BigInt   @db.UnsignedBigInt
+  user       user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt   DateTime @default(now()) @db.Timestamp(0)
+  updateAt   DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
-model postComments {
-  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  title       String   @db.VarChar(100)
-  content     String   @db.VarChar(200)
-  published   Int      @db.TinyInt
-  postId      BigInt   @db.UnsignedBigInt
-  post        posts    @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  createAt    DateTime @default(now()) @db.Timestamp(0)
-  publishedAt DateTime @default(now()) @db.Timestamp(0)
+model order {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title        String   @db.VarChar(100)
+  token        String   @db.VarChar(100)
+  subTotal     Int      @db.Int
+  itemDiscount Int      @db.Int
+  tax          Int      @db.Int
+  total        Int      @db.Int
+  discount     Int      @db.Int
+  grandTotal   Int      @db.Int
+  firstName    String   @db.VarChar(100)
+  middleName   String   @db.VarChar(100)
+  lastName     String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(100)
+  mobile       String   @db.VarChar(100)
+  city         String   @db.VarChar(100)
+  country      String   @db.VarChar(100)
+  userId       BigInt   @db.UnsignedBigInt
+  user         user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt     DateTime @default(now()) @db.Timestamp(0)
+  updateAt     DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
-model postMetas {
-  id       BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  key      String   @db.VarChar(50)
-  content  String   @db.VarChar(200)
-  postId   BigInt   @db.UnsignedBigInt
-  post     posts    @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  createAt DateTime @default(now()) @db.Timestamp(0)
-  updateAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
-}
-
-model tags {
+model category {
   id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  title     String   @db.VarChar(75)
+  title     String   @db.VarChar(100)
   metaTitle String   @db.VarChar(100)
   slug      String   @db.VarChar(100)
-  content   String   @db.VarChar(200)
+  content   String   @db.VarChar(100)
   createAt  DateTime @default(now()) @db.Timestamp(0)
   updateAt  DateTime @default(now()) @updatedAt @db.Timestamp(0)
-
-  postTags postTags[]
 }
 
-model postTags {
-  id       BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  postId   BigInt   @db.UnsignedBigInt
-  post     posts    @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  tagId    BigInt   @db.UnsignedBigInt
-  tag      tags     @relation(fields: [tagId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  createAt DateTime @default(now()) @db.Timestamp(0)
-  updateAt DateTime @default(now()) @updatedAt @db.Timestamp(0)
+model product {
+  id             BigInt           @id @default(autoincrement()) @db.UnsignedBigInt
+  firstName      String           @db.VarChar(100)
+  metaTitle      String           @db.VarChar(100)
+  slug           String           @db.VarChar(100)
+  summary        String           @db.VarChar(100)
+  price          Int              @db.Int
+  discount       Int              @db.Int
+  userId         BigInt           @db.UnsignedBigInt
+  user           user             @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  publishedAt    DateTime         @default(now()) @db.Timestamp(0)
+  startsAt       DateTime         @default(now()) @db.Timestamp(0)
+  endsAt         DateTime         @default(now()) @db.Timestamp(0)
+  createAt       DateTime         @default(now()) @db.Timestamp(0)
+  updateAt       DateTime         @default(now()) @updatedAt @db.Timestamp(0)
+  product_meta   product_meta[]
+  product_review product_review[]
 }
 
-model categorys {
-  id           BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
-  title        String         @db.VarChar(75)
-  metaTitle    String         @db.VarChar(100)
-  slug         String         @db.VarChar(100)
-  content      String         @db.VarChar(200)
-  createAt     DateTime       @default(now()) @db.Timestamp(0)
-  updateAt     DateTime       @default(now()) @updatedAt @db.Timestamp(0)
-  postCategory postCategory[]
+model product_meta {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  key       String   @db.VarChar(100)
+  content   String   @db.VarChar(100)
+  productId BigInt   @db.UnsignedBigInt
+  product   product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt  DateTime @default(now()) @db.Timestamp(0)
+  updateAt  DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }
 
-model postCategory {
-  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-  postId     BigInt    @db.UnsignedBigInt
-  post       posts     @relation(fields: [postId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  categoryId BigInt    @db.UnsignedBigInt
-  category   categorys @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  createAt   DateTime  @default(now()) @db.Timestamp(0)
-  updateAt   DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+model product_review {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String   @db.VarChar(100)
+  rating    String   @db.VarChar(100)
+  content   String   @db.VarChar(100)
+  productId BigInt   @db.UnsignedBigInt
+  product   product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createAt  DateTime @default(now()) @db.Timestamp(0)
+  updateAt  DateTime @default(now()) @updatedAt @db.Timestamp(0)
 }

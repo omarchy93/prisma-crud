@@ -1,0 +1,43 @@
+-- CreateTable
+CREATE TABLE `user` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `firstName` VARCHAR(50) NOT NULL,
+    `middleName` VARCHAR(50) NOT NULL,
+    `lastName` VARCHAR(50) NOT NULL,
+    `email` VARCHAR(50) NOT NULL,
+    `mobile` VARCHAR(15) NOT NULL,
+    `password` VARCHAR(32) NOT NULL,
+    `admin` TINYINT NOT NULL,
+    `registeredAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `lastLogin` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `createAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updateAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    UNIQUE INDEX `user_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `cart` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(100) NOT NULL,
+    `sessionId` VARCHAR(100) NOT NULL,
+    `token` VARCHAR(100) NOT NULL,
+    `status` VARCHAR(100) NOT NULL,
+    `firstName` VARCHAR(100) NOT NULL,
+    `middleName` VARCHAR(100) NOT NULL,
+    `lastName` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(100) NOT NULL,
+    `mobile` VARCHAR(100) NOT NULL,
+    `city` VARCHAR(100) NOT NULL,
+    `country` VARCHAR(100) NOT NULL,
+    `userId` BIGINT UNSIGNED NOT NULL,
+    `createAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+    `updateAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    UNIQUE INDEX `cart_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `cart` ADD CONSTRAINT `cart_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
