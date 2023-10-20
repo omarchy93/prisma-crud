@@ -42,9 +42,7 @@ export async function PUT(req, res) {
     let result = await prisma.users.update({
       where: reqBody,
       data: {
-        title: "ccccc",
-        content: "dfssg",
-        published: "4",
+        reqBody,
       },
     });
     return NextResponse.json({ status: "success", result: result });
